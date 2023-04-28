@@ -9,8 +9,8 @@ const EventSchema = new mongoose.Schema(
         details: { type: mongoose.Schema.Types.String, required: true },
         type: { type: mongoose.Schema.Types.String, required: true },
         isLimited: { type: mongoose.Schema.Types.Boolean, required: false, default: false },
-        participantLimit: { type: mongoose.Schema.Types.Number, required: false },
-        participants: [
+        attendeeLimit: { type: mongoose.Schema.Types.Number, required: false },
+        attendees: [
             {
                 userId: { type: mongoose.Schema.Types.ObjectId, required: true },
                 createdAt: { type: mongoose.Schema.Types.Date, required: false, default: Date.now },
