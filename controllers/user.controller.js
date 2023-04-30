@@ -1,4 +1,6 @@
 const userModel = require('../database/user.model');
+const Bcrypt = require('../lib/bcrypt');
+const JWT = require('../lib/jwt');
 
 class User {
     constructor(params = {}) {
@@ -6,11 +8,9 @@ class User {
     }
 
     async create() {
+        let bcrypt = new Bcrypt();
+        this.params.password = bcrypt.hashPassword(this.params.password);
         return await userModel.create(this.params);
-    }
-
-    async readOne() {
-        return await userModel.findOne({ _id: this.params._id }) || [];
     }
 
     async update() {
@@ -19,6 +19,27 @@ class User {
 
     async delete() {
         return await userModel.deleteOne({ _id: this.params?._id });
+    }
+
+    async authenticate() {
+        let user = await userModel.findOne({ email: this.params.email }) || [];
+        let bcrypt = new Bcrypt();
+        let isAuthentiated = bcrypt.validateUser(this.params.password, user.password);
+        let message;
+        let success;
+        let token;
+        if (isAuthentiated) {
+            let jwt = new JWT();
+            user.password = null;
+            token = jwt.createAccessToken(user);
+            success = true;
+            message = "Giriş başarılı!"
+        } else {
+            token = null;
+            success = false;
+            message = "Kullanıcı adı veya şifre hatalı!"
+        }
+        return {token, success, message};
     }
 }
 
