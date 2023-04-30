@@ -15,8 +15,8 @@ router.get('/:_id', async (req, res, next) => {
   try {
     let _id = req.params['_id'];
     let event = new Event({ _id: _id });
-    let events = await event.readOne();
-    res.send(events);
+    let result = await event.readOne();
+    res.send(result);
   } catch (error) {
     next(error);
   }
